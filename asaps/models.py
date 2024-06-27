@@ -22,15 +22,13 @@ class AsOperations:
         ids = self.client.get(f"{endpoint}?all_ids=true").json()
         return ids
 
-    def get_arch_objs_for_resource(self, uri):
+    def get_archival_objects_for_resource(self, uri):
         """Get archival objects associated with a resource."""
         logger.info(f"Retrieving AOs for {uri}")
-        arch_obj_list = []
-        output = self.client.get(f"{uri}/tree").json()
-        for arch_obj_uri in find_key(output, "record_uri"):
-            if "archival_objects" in arch_obj_uri:
-                arch_obj_list.append(arch_obj_uri)
-        return arch_obj_list
+        ordered_records = self.client.get(f"{uri}/ordered_records").json()
+        return [
+            record["ref"] for record in ordered_records["uris"] if record["depth"] > 0
+        ]
 
     def get_record(self, uri):
         """Retrieve an individual record."""
@@ -211,16 +209,6 @@ def extract_obj_field(field, rec_obj, obj_field_dict, report_dict):
 def filter_note_type(rec_obj, note_type):
     """Filter notes by type."""
     return (n for n in rec_obj["notes"] if n.get("type") == note_type)
-
-
-def find_key(nest_dict, key):
-    """Find all instances of a key in a nested dictionary."""
-    if key in nest_dict:
-        yield nest_dict[key]
-    children = nest_dict.get("children")
-    if isinstance(children, list):
-        for child in children:
-            yield from find_key(child, key)
 
 
 def string_to_uri(agent_links, string, uri_dict, role, relator=""):

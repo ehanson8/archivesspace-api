@@ -33,17 +33,19 @@ def as_mock():
         m.get("/repositories/0/resources/756", json=res_json_2)
         upd_json = {"post": "Success"}
         m.post("/repositories/0/resources/423", json=upd_json)
-        tree_json = {
-            "record_uri": "/repositories/0/archival_objects/1234",
-            "children": [{"record_uri": "/repositories/0/archival_objects/5678"}],
+        ordered_records_json = {
+            "uris": [
+                {"ref": "/repositories/0/resources/423", "depth": 0},
+                {"ref": "/repositories/0/archival_objects/1234", "depth": 1},
+            ]
         }
-        m.get("/repositories/2/resources/423/tree", json=tree_json)
+        m.get(
+            "/repositories/0/resources/423/ordered_records", json=ordered_records_json
+        )
         crtd_json = {"status": "Created"}
         m.post("/repositories/0/resources", json=crtd_json)
         search_json = [{"uri": "/repositories/0/archival_objects/1234"}]
         m.get("/repositories/0/search?", json=search_json)
-        tree_json = {"record_uri": "/repositories/0/archival_objects/1234"}
-        m.get("/repositories/0/resources/423/tree", json=tree_json)
         ao_json = {
             "uri": "/repositories/0/archival_objects/1234",
             "ref_id": "a2b2c2",

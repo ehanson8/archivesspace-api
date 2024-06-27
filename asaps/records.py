@@ -169,7 +169,7 @@ def link_dig_obj(arch_obj, dig_obj_uri):
     instance["instance_type"] = "digital_object"
     instance["jsonmodel_type"] = "instance"
     instance["digital_object"] = {"ref": dig_obj_uri}
-    instance["is_representative"] = True
+    instance["is_representative"] = False
     arch_obj["instances"].append(instance)
     return arch_obj
 
@@ -202,7 +202,7 @@ def update_dig_obj_link(dig_obj, link):
         file_version = {}
         file_version["file_uri"] = link
         file_version["publish"] = True
-        file_version["is_representative"] = True
+        file_version["is_representative"] = False
         file_version["jsonmodel_type"] = "file_version"
         dig_obj["file_versions"] = [file_version]
         file_version["xlink_actuate_attribute"] = "onRequest"

@@ -46,16 +46,20 @@ skipped_resources = []
 
 
 @click.group()
-@click.option("--url", envvar="ARCHIVESSPACE_URL")
+@click.option("--url", envvar="AS_BASEURL")
 @click.option(
-    "-u", "--username", prompt="Enter username", help="The username for authentication."
+    "-u",
+    "--username",
+    prompt="Enter username",
+    envvar="AS_USERNAME",
+    help="The username for authentication.",
 )
 @click.option(
     "-p",
     "--password",
     prompt="Enter password",
     hide_input=True,
-    envvar="DOCKER_PASS",
+    envvar="AS_PASSWORD",
     help="The password for authentication.",
 )
 @click.pass_context
@@ -164,7 +168,7 @@ def find(ctx, dry_run, repo_id, rec_type, field, search, rpl_value):
     skipped_arch_objs = []
     if rec_type == "archival_object":
         for uri in skipped_resources:
-            arch_obj_list = as_ops.get_arch_objs_for_resource(uri)
+            arch_obj_list = as_ops.get_archival_objects_for_resource(uri)
             skipped_arch_objs.append(arch_obj_list)
     skipped_uris = skipped_resources + skipped_arch_objs
     for uri in as_ops.search(search, repo_id, rec_type, field):

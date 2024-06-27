@@ -25,11 +25,10 @@ def test_get_all_records(as_ops):
     assert ids == [423, 756]
 
 
-def test_get_arch_objs_for_resource(as_ops):
-    """Test get_arch_objs_for_resource method."""
-    resource = "/repositories/2/resources/423"
-    arch_obj_list = as_ops.get_arch_objs_for_resource(resource)
-    assert "/repositories/0/archival_objects/5678" in arch_obj_list
+def test_get_archival_objects_for_resource(as_ops):
+    """Test get_archival_objects_for_resource method."""
+    resource = "/repositories/0/resources/423"
+    arch_obj_list = as_ops.get_archival_objects_for_resource(resource)
     assert "/repositories/0/archival_objects/1234" in arch_obj_list
 
 
@@ -194,16 +193,6 @@ def test_filter_note_type():
     notes = models.filter_note_type(rec_obj, "acqinfo")
     for note in notes:
         assert note["note_type"] == "acqinfo"
-
-
-def test_find_key():
-    """Test find_key function."""
-    nest_dict = {"children": [{"publish": True, "children": [{"publish": True}]}]}
-    keys = models.find_key(nest_dict, "children")
-    key_count = 0
-    for key in keys:
-        key_count += 1
-    assert key_count == 2
 
 
 def test_string_to_uri():

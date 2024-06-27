@@ -6,13 +6,21 @@ from asaps import models, records
 def export_metadata(client, resource, file_identifier, repo_id):
     """Export ArchivesSpace metadata as dicts for each archival object."""
     resource_uri = f"/repositories/{repo_id}/resources/{resource}"
-    arch_obj_list = client.get_arch_objs_for_resource(resource_uri)
-    for uri in arch_obj_list:
-        rec_obj = client.get_record(uri)
+    archival_object_list = client.get_archival_objects_for_resource(resource_uri)
+    for uri in archival_object_list:
+        record_object = client.get_record(uri)
+        if file_identifier == "uri":
+            repo_id = record_object["uri"].replace("/repositories/", "")
+            repo_id = repo_id[: repo_id.index("/archival_objects/")]
+            rec_id_split = record_object["uri"].rindex("/archival_objects/")
+            rec_id = record_object["uri"][rec_id_split + 18 :]
+            file_identifier_value = f"{repo_id.zfill(2)}-{rec_id.zfill(9)}"
+        else:
+            file_identifier_value = record_object.get(file_identifier)
         report_dict = {
-            "uri": rec_obj["uri"],
-            "title": rec_obj["display_string"],
-            "file_identifier": rec_obj.get(file_identifier),
+            "uri": record_object["uri"],
+            "title": record_object["display_string"],
+            "file_identifier": file_identifier_value,
         }
         yield report_dict
 
